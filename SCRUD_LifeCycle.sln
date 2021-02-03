@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30711.63
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebAPI", "WebAPI", "{DE3EBC92-2B0A-4452-8AF7-D3221E53F9AF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Blazor", "Blazor", "{6C1F88E8-46BB-4587-9E12-2DC95869FD70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PNorthWindAPI", "WebAPI\PNorthWindAPI\PNorthWindAPI.csproj", "{164608B1-D6D2-46D6-8C7A-325DA27D9031}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorCRUDLifeCycle", "Blazor\BlazorCRUDLifeCycle\BlazorCRUDLifeCycle.csproj", "{1FCF2919-AC24-41CB-BD39-3EA235E7CE70}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{164608B1-D6D2-46D6-8C7A-325DA27D9031}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{164608B1-D6D2-46D6-8C7A-325DA27D9031}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{164608B1-D6D2-46D6-8C7A-325DA27D9031}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{164608B1-D6D2-46D6-8C7A-325DA27D9031}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FCF2919-AC24-41CB-BD39-3EA235E7CE70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FCF2919-AC24-41CB-BD39-3EA235E7CE70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FCF2919-AC24-41CB-BD39-3EA235E7CE70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FCF2919-AC24-41CB-BD39-3EA235E7CE70}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{164608B1-D6D2-46D6-8C7A-325DA27D9031} = {DE3EBC92-2B0A-4452-8AF7-D3221E53F9AF}
+		{1FCF2919-AC24-41CB-BD39-3EA235E7CE70} = {6C1F88E8-46BB-4587-9E12-2DC95869FD70}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {535E4AB8-81DC-43E8-BA76-BA30097617A5}
+	EndGlobalSection
+EndGlobal
