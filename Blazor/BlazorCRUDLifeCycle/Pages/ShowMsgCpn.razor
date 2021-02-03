@@ -1,0 +1,49 @@
+﻿@if (showMsg)
+{
+    <!-- Modal -->
+    <div class="modal fade show" id="exampleModal" tabindex="-1" style="display:block" role="dialog" aria-modal="true" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">@Title</h5>
+                    <button type="button" class="close" aria-label="Close" @onclick="CloseMsg">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @((MarkupString)Msg)
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" @onclick="CloseMsg">關閉</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--End Modal-->
+}
+
+
+@code {
+    [Parameter]
+    public bool showMsg { get; set; } = false;
+    [Parameter]
+    public string Title { get; set; } = "";
+    [Parameter]
+    public string Msg { get; set; } = "";
+    [Parameter]
+    public string NowTime { get; set; } = "";
+
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        await base.SetParametersAsync(parameters);
+    }
+
+
+    private void CloseMsg()
+    {
+        showMsg = false;
+        Title = "";
+        Msg = "";
+    }
+}

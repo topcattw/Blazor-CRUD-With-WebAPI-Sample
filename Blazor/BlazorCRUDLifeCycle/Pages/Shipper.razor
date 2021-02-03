@@ -1,0 +1,312 @@
+﻿@page "/Shipper"
+@using BlazorCRUDLifeCycle.Data
+@using BlazorCRUDLifeCycle.DAOs
+@inject ShipperDao ShipperService
+@inject IJSRuntime ijJS
+@inject NavigationManager ijNavigationManager
+@inherits MyComponentBase;
+
+<p>@NowTime</p>
+@if (showList)
+{
+    <div class="row" id="divList">
+        <div class="col-12">
+            <button class="btn btn-outline-primary" @onclick="btnAddNew">新增</button>
+            <table class="table table-bordered table-hover table-striped">
+                <thead>
+                    <tr class="bg-primary text-white">
+                        <th>功能</th>
+                        <th>ShipperID</th>
+                        <th>ComponyName</th>
+                        <th>Phone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var tShipper in oShippers)
+                    {
+                        <tr>
+                            <td>
+                                <button class="btn btn-outline-primary" @onclick="(e=>editItm(tShipper))">編</button>
+                            </td>
+                            <td>@tShipper.ShipperID</td>
+                            <td>@tShipper.CompanyName</td>
+                            <td>@tShipper.Phone</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+
+@if (showEdit)
+{
+    <div class="row" id="divEdit">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+            <div class="card border-primary mb-3">
+                <div class="card-header">
+                    <h3>Shipper維護</h3>
+                </div>
+                <div class="card-body">
+                    <fieldset>
+                        <div class="form-group row">
+                            <label for="staticEmail" class="col-sm-3 col-form-label">ShipperID</label>
+                            <div class="col-sm-9">
+                                <input type="text" readonly class="form-control" id="txtShipperID" @bind="oShipper.ShipperID">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="txtCompanyName" class="col-sm-3 col-form-label">CompanyName</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="txtCompanyName" @bind="oShipper.CompanyName">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="txtPhone" class="col-sm-3 col-form-label">Phone</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="txtPhone" @bind="oShipper.Phone">
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="card-footer">
+                    @if (showBtnInsert)
+                    {
+                        <button class="btn btn-outline-primary" @onclick="InsertItem">新增</button>
+                    }
+                    @if (showBtnUpdate)
+                    {
+                        <button class="btn btn-outline-primary" @onclick="UpdateItem">修改</button>
+                    }
+                    @if (showBtnDel)
+                    {
+                        <button class="btn btn-outline-secondary" @onclick="DelItem">刪除</button>
+                    }
+                    <button class="btn btn-outline-secondary" @onclick="btnCancelClick">取消</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-1"></div>
+    </div>
+}
+
+<ShowMsgCpn Title="@oMsg.Title" Msg="@oMsg.Msg" showMsg="@oMsg.showMsg" NowTime="@oMsg.NowTime"></ShowMsgCpn>
+
+@code {
+
+    #region 變數設定
+    private List<ShipperVM> oShippers = new List<ShipperVM>();
+    private ShipperVM oShipper = new ShipperVM();
+
+    private string NowTime = "";
+    private bool showList = true;
+    private bool showEdit = false;
+    private bool showBtnInsert = false;
+    private bool showBtnUpdate = false;
+    private bool showBtnDel = false;
+    private string ErrMsg = "";
+
+    #endregion
+
+    #region 初始化
+    protected async override Task OnInitializedAsync()
+    {
+        oShippers = await ShipperService.GetShippersAsync();
+
+        await base.OnInitializedAsync();
+    }
+    private void EditInit()
+    {
+        oShipper = new ShipperVM();
+        showBtnInsert = false;
+        showBtnUpdate = false;
+        showBtnDel = false;
+    }
+
+    #endregion
+
+    #region 檢查輸入
+    private bool ChkInput()
+    {
+        bool rc = true;
+        ErrMsg = "";
+        if(oShipper.CompanyName == "")
+        {
+            ErrMsg += "請輸入CompanyName<br>";
+            rc = false;
+        }
+        if(oShipper.Phone == "")
+        {
+            ErrMsg += "請輸入Phone<br>";
+            rc = false;
+        }
+        return rc;
+    }
+
+    #endregion
+
+    #region 開啟編輯區
+    private void btnAddNew()
+    {
+        showList = false;
+        showEdit = true;
+        EditInit();
+        showBtnInsert = true;
+    }
+
+    private void editItm(ShipperVM tShipper)
+    {
+        showList = false;
+        EditInit();
+        oShipper = tShipper;
+        showEdit = true;
+        showBtnUpdate = true;
+        showBtnDel = true;
+    }
+
+    #endregion
+
+    #region 編輯區按鈕
+
+    /// <summary>
+    /// 新增
+    /// </summary>
+    public async void InsertItem()
+    {
+        NowTime = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+        if (ChkInput())
+        {
+            string rc = await ShipperService.InsertItemAsync(oShipper);
+            if (rc != "")
+            {
+                EditInit();
+                showEdit = false;
+                showList = true;
+
+                oShippers = await ShipperService.GetShippersAsync();
+
+                //oMsg.Title = "訊息：";
+                //oMsg.Msg = rc;
+                //oMsg.showMsg = true;
+                //oMsg.NowTime = NowTime;
+                ShowMsg(rc);
+                StateHasChanged();
+            }
+            else
+            {
+                //oMsg.Title = "訊息：";
+                //oMsg.Msg = "新增失敗";
+                //oMsg.showMsg = true;
+                //oMsg.NowTime = NowTime;
+                ShowMsg("新增失敗");
+                StateHasChanged();
+            }
+        }
+        else
+        {
+            //oMsg.Title = "訊息：";
+            //oMsg.Msg = ErrMsg;
+            //oMsg.showMsg = true;
+            //oMsg.NowTime = NowTime;
+            ShowMsg(ErrMsg);
+            StateHasChanged();
+        }
+    }
+
+    /// <summary>
+    /// 修改
+    /// </summary>
+    public async void UpdateItem()
+    {
+        if (ChkInput())
+        {
+            string rc = await ShipperService.UpdateItemAsync(oShipper);
+            if (rc != "")
+            {
+                EditInit();
+                showEdit = false;
+                showList = true;
+
+                oShippers = await ShipperService.GetShippersAsync();
+
+                //oMsg.Title = "訊息：";
+                //oMsg.Msg = rc;
+                //oMsg.showMsg = true;
+                ShowMsg(rc);
+                StateHasChanged();
+            }
+            else
+            {
+                //oMsg.Title = "訊息：";
+                //oMsg.Msg = "修改失敗";
+                //oMsg.showMsg = true;
+                ShowMsg("修改失敗");
+                StateHasChanged();
+            }
+        }
+        else
+        {
+            //oMsg.Title = "訊息：";
+            //oMsg.Msg = ErrMsg;
+            //oMsg.showMsg = true;
+            ShowMsg(ErrMsg);
+            StateHasChanged();
+        }
+    }
+
+    /// <summary>
+    /// 刪除
+    /// </summary>
+    public async void DelItem()
+    {
+        bool confirmed = await ijJS.InvokeAsync<bool>("confirm", "您確定要刪除此資料嗎?");
+        if (confirmed)
+        {
+
+            string rc = await ShipperService.DelItemAsync(oShipper.ShipperID);
+            if (rc != "")
+            {
+                EditInit();
+                showEdit = false;
+                showList = true;
+
+                oShippers = await ShipperService.GetShippersAsync();
+
+                //oMsg.Title = "訊息：";
+                //oMsg.Msg = rc;
+                //oMsg.showMsg = true;
+                ShowMsg(rc);
+                StateHasChanged();
+            }
+        }
+        else
+        {
+            //oMsg.Title = "訊息：";
+            //oMsg.Msg = ErrMsg;
+            //oMsg.showMsg = true;
+            ShowMsg(ErrMsg);
+            StateHasChanged();
+        }
+    }
+
+    /// <summary>
+    /// 取消
+    /// </summary>
+    private async void btnCancelClick()
+    {
+        bool confirmed = await ijJS.InvokeAsync<bool>("confirm", "您確定要放棄維護嗎?");
+        if (confirmed)
+        {
+            EditInit();
+            showEdit = false;
+            showList = true;
+            oShippers = await ShipperService.GetShippersAsync();
+            StateHasChanged();
+        }
+    }
+
+    #endregion
+
+}
